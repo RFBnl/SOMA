@@ -25,7 +25,7 @@
     // const pagesIndex = segments.indexOf('pages');
     const pagesIndex = segments.findIndex(seg => modules.includes(seg));
     if (pagesIndex > 0) {
-      return '/' + segments.slice(0, pagesIndex + 1).join('/') + '/';
+      return '/' + segments.slice(0, pagesIndex + 1).join('/');
     }
 
     // Fallback: si hostname contiene github.io, tomar el primer segmento
@@ -74,11 +74,11 @@
   // --- rutas portables ---
   function getHomeByRole(role) {
     const routes = {
-      estudiante: `${BASE_PATH}estudiante/index.html`,
-      docente: `${BASE_PATH}docente/index.html`,
-      psicologo: `${BASE_PATH}psicologo/index.html`,
-      coordinador: `${BASE_PATH}coordinador/index.html`,
-      admin: `${BASE_PATH}admin/index.html`
+      estudiante: `${BASE_PATH}estudiante`,
+      docente: `${BASE_PATH}docente`,
+      psicologo: `${BASE_PATH}psicologo`,
+      coordinador: `${BASE_PATH}coordinador`,
+      admin: `${BASE_PATH}admin`
     };
     return routes[role] || `${BASE_PATH}index.html`;
   }
