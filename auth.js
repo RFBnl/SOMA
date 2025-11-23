@@ -89,19 +89,19 @@
   }
 
   // Ruta relativa desde subpágina hacia su home
-  function getMyHome() {
-    const t = readToken();
-    if (!t || !t.logged || !t.role) return "../index.html";
+  // function getMyHome() {
+  //   const t = readToken();
+  //   if (!t || !t.logged || !t.role) return "../index.html";
 
-    const homeFiles = {
-      estudiante: "index.html",
-      docente: "index.html",
-      psicologo: "index.html",
-      coordinador: "index.html",
-      admin: "index.html"
-    };
-    return homeFiles[t.role] || "../index.html";
-  }
+  //   const homeFiles = {
+  //     estudiante: "index.html",
+  //     docente: "index.html",
+  //     psicologo: "index.html",
+  //     coordinador: "index.html",
+  //     admin: "index.html"
+  //   };
+  //   return homeFiles[t.role] || "../index.html";
+  // }
 
   function protectPage(requiredRole) {
     const t = readToken() || {};
@@ -127,7 +127,7 @@
     isLogged,
     getHomeByRole,
     getIndexPath,
-    getMyHome,
+    // getMyHome,
     protectPage,
     logout,
     BASE_PATH  // ⭐ Exponer para debugging
