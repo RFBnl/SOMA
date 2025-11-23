@@ -4,33 +4,38 @@
 
   // ⭐ DETECCIÓN AUTOMÁTICA: Calcula la base desde la ubicación del index.html
   function getBasePath() {
+    debugger;
     const path = window.location.pathname;
-    
+    const modules = ['estudiante', 'docente', 'psicologo', 'coordinador', 'admin'];
+
     // Si estamos EN index.html o en la raíz
-    if (path.endsWith('/') || path.endsWith('/index.html')) {
+    // if (path.endsWith('/') || path.endsWith('/index.html')) {
+    if (path.endsWith('/') || !modules.some(t => path.includes(t))) {
       // Extraer todo hasta el último /
       const base = path.replace(/index\.html$/, '');
       return base || '/';
     }
-    
+
     // Si estamos en una subpágina (ej: /pages/estudiante/estudiante.html)
     // Buscamos hasta dónde está el directorio raíz
     // Asumimos que index.html está 2 niveles arriba de las subpáginas
     const segments = path.split('/').filter(s => s);
-    
+
     // Si tenemos "pages" en la ruta, todo antes de "pages" es la base
-    const pagesIndex = segments.indexOf('pages');
+    // const pagesIndex = segments.indexOf('pages');
+    const pagesIndex = segments.findIndex(seg => modules.includes(seg));
     if (pagesIndex > 0) {
-      return '/' + segments.slice(0, pagesIndex).join('/') + '/';
+      return '/' + segments.slice(0, pagesIndex + 1).join('/') + '/';
     }
-    
+
     // Fallback: si hostname contiene github.io, tomar el primer segmento
     if (window.location.hostname.includes('github.io')) {
       return segments.length > 0 ? `/${segments[0]}/` : '/';
     }
-    
+
     return '/';
   }
+
 
   const BASE_PATH = getBasePath();
 
@@ -48,17 +53,17 @@
     } catch {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(t));
-      } catch {}
+      } catch { }
     }
   }
 
   function removeToken() {
     try {
       sessionStorage.removeItem(STORAGE_KEY);
-    } catch {}
+    } catch { }
     try {
       localStorage.removeItem(STORAGE_KEY);
-    } catch {}
+    } catch { }
   }
 
   function isLogged() {
@@ -69,33 +74,33 @@
   // --- rutas portables ---
   function getHomeByRole(role) {
     const routes = {
-      estudiante: `${BASE_PATH}pages/estudiante/estudiante.html`,
-      docente: `${BASE_PATH}pages/docente/docente.html`,
-      psicologo: `${BASE_PATH}pages/psicologo/psicologo.html`,
-      coordinador: `${BASE_PATH}pages/coordinador/coordinador.html`,
-      admin: `${BASE_PATH}pages/admin/admin.html`
+      estudiante: `${BASE_PATH}estudiante/index.html`,
+      docente: `${BASE_PATH}docente/index.html`,
+      psicologo: `${BASE_PATH}psicologo/index.html`,
+      coordinador: `${BASE_PATH}coordinador/index.html`,
+      admin: `${BASE_PATH}admin/index.html`
     };
     return routes[role] || `${BASE_PATH}index.html`;
   }
 
   // Ruta relativa desde subpágina hacia index
   function getIndexPath() {
-    return "../../index.html";
+    return "../index.html";
   }
 
   // Ruta relativa desde subpágina hacia su home
   function getMyHome() {
     const t = readToken();
-    if (!t || !t.logged || !t.role) return "../../index.html";
-    
+    if (!t || !t.logged || !t.role) return "../index.html";
+
     const homeFiles = {
-      estudiante: "estudiante.html",
-      docente: "docente.html",
-      psicologo: "psicologo.html",
-      coordinador: "coordinador.html",
-      admin: "admin.html"
+      estudiante: "index.html",
+      docente: "index.html",
+      psicologo: "index.html",
+      coordinador: "index.html",
+      admin: "index.html"
     };
-    return homeFiles[t.role] || "../../index.html";
+    return homeFiles[t.role] || "../index.html";
   }
 
   function protectPage(requiredRole) {
@@ -152,7 +157,7 @@
           a.classList.add("active");
         });
       });
-    } catch {}
+    } catch { }
 
     // Social login pendiente
     try {
@@ -162,12 +167,12 @@
           alert("Funcionalidad pendiente de implementación");
         });
       });
-    } catch {}
+    } catch { }
 
     loginForm.addEventListener("submit", (ev) => {
       ev.preventDefault();
       writeToken({ logged: true, role: selectedRole, time: Date.now() });
-      
+
       // ⭐ Usar ruta absoluta con BASE_PATH
       window.location.href = getHomeByRole(selectedRole);
     });
